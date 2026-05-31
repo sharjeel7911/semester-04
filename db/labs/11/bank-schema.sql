@@ -243,12 +243,12 @@ UNLOCK TABLES;
 -- -------------------------------------------------------------------------------------------------------
 
 -- Question - 01
-SELECT 
+SELECT
     c.name, c.phoneNum, l.current_credit
 FROM
     customer c
 INNER JOIN
-    loanaccounts l 
+    loanaccounts l
 ON
 	c.customer_id = l.customer_id
 WHERE
@@ -257,13 +257,13 @@ WHERE
 -- -------------------------------------------------------------------------------------------------------
 
 -- Question - 02
-SELECT 
+SELECT
     c.name, c.Address, l.max_credit
 FROM
     customer c
 INNER JOIN
-    loanaccounts l 
-ON 
+    loanaccounts l
+ON
 	c.customer_id = l.customer_id
 WHERE
     c.name = 'Imran Khan';
@@ -271,13 +271,13 @@ WHERE
 -- -------------------------------------------------------------------------------------------------------
 
 -- Question - 03
-SELECT 
+SELECT
     c.name, c.phoneNum, l.current_credit
 FROM
     customer c
 LEFT JOIN
-    loanaccounts l 
-ON 
+    loanaccounts l
+ON
 	c.customer_id = l.customer_id
 WHERE
     current_credit IS NULL;
@@ -285,19 +285,19 @@ WHERE
 -- -------------------------------------------------------------------------------------------------------
 
 -- Question - 04
-SELECT 
+SELECT
     *
 FROM
     customer
 WHERE
     customer_id IN (
-		SELECT 
+		SELECT
             customer_id
         FROM
             loanaccounts)
-        AND 
+        AND
 	customer_id NOT IN (
-        SELECT 
+        SELECT
             customer_id
         FROM
             savingaccounts);
@@ -305,41 +305,41 @@ WHERE
 -- -------------------------------------------------------------------------------------------------------
 
 -- Question - 05
-SELECT 
+SELECT
     t.*, c.name AS customer_Name, e.name AS salesman_Name
 FROM
     transaction t
 LEFT JOIN
-    savingaccounts s 
-ON 
+    savingaccounts s
+ON
 	t.savingAccount_number = s.Account_number
 LEFT JOIN
-    loanaccounts l 
-ON 
+    loanaccounts l
+ON
 	t.loanAccount_number = l.Account_number
 LEFT JOIN
     customer c
-ON 
+ON
 	c.customer_id = s.customer_id OR c.customer_id = l.customer_id
 LEFT JOIN
-    employee e 
-ON 
+    employee e
+ON
 	t.eid = e.eid;
-    
+
 -- -------------------------------------------------------------------------------------------------------
 
 -- Question - 06
-SELECT 
+SELECT
     c.*, s.*, s.branch_id
 FROM
     customer c
 INNER JOIN
-    savingaccounts s 
-ON 
+    savingaccounts s
+ON
 	c.customer_id = s.customer_id
 WHERE
     c.customer_id IN (
-		SELECT 
+		SELECT
             customer_id
         FROM
             savingaccounts);
@@ -347,71 +347,71 @@ WHERE
 -- -------------------------------------------------------------------------------------------------------
 
 -- Question - 07
-SELECT 
+SELECT
     c.name, c.Address, b.branch_address, bk.bank_name
 FROM
     customer c
 INNER JOIN
-    savingaccounts s 
-ON 
+    savingaccounts s
+ON
 	c.customer_id = s.customer_id
 INNER JOIN
-    branch b 
-ON 
+    branch b
+ON
 	s.branch_id = b.branch_id
 INNER JOIN
-    bank bk 
-ON 
+    bank bk
+ON
 	b.bank_id = bk.bank_id;
 
 -- -------------------------------------------------------------------------------------------------------
 
 -- Question - 08
-SELECT 
+SELECT
     branch_id, branch_address
 FROM
     branch
 WHERE
     bank_id IN (
-		SELECT 
+		SELECT
             bank_id
         FROM
             bank
         WHERE
             bank_name = 'Allied Bank Limited');
-            
+
 -- -------------------------------------------------------------------------------------------------------
 
 -- Question - 09
-SELECT 
+SELECT
     e.name, e.designation, b.bank_id, br.branch_address
 FROM
     employee e
 RIGHT JOIN
-    branch br 
-ON 
+    branch br
+ON
 	e.branch_id = br.branch_id
 RIGHT JOIN
-    bank b 
-ON 
+    bank b
+ON
 	br.bank_id = b.bank_id;
 
 
 -- -------------------------------------------------------------------------------------------------------
 
 -- Question - 10
-SELECT 
+SELECT
     branch_id
 FROM
     branch
 WHERE
     branch_id IN (
-		SELECT 
+		SELECT
             branch_id
         FROM
             loanaccounts)
 	AND branch_id IN (
-		SELECT 
+		SELECT
             branch_id
         FROM
             savingaccounts);
