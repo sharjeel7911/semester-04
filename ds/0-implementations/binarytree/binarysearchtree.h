@@ -14,6 +14,8 @@ class BinarySearchTree {
 private:
   Node *root;
 
+  // ------------------------------------------
+
   Node *insertVal(Node *node, int val) {
     if (node == nullptr) {
       return new Node(val);
@@ -25,7 +27,6 @@ private:
     }
     return node;
   }
-
   Node *deleteVal(Node *node, int val) {
     if (node == nullptr) {
       return node;
@@ -38,10 +39,9 @@ private:
     }
 
     else {
-      // Step 2: Value found! Handle deletion
+      // value found
       if (node->leftChild == nullptr) {
-        // FOR ONLY 1 NODE IN TREE temp is assigned nullptr
-        // Case 1 & Case 2: No child or only one child
+        // case 1 & 2: No child or only one child
         Node *temp = node->rightChild;
         delete node;
         return temp;
@@ -51,43 +51,20 @@ private:
         return temp;
       }
 
+      // case 3: node has 2 children
       else {
-        // Case 3: Node has TWO children
-        // Find the absolute minimum node in the right subtree
-
+        // find the minimum val in the right subtree and del
         Node *temp = findMin(node->rightChild);
-
-        // Replace current node's data with the successor's data
         node->data = temp->data;
-
-        // Recursively delete the successor from the right subtree
         node->rightChild = deleteVal(node->rightChild, temp->data);
       }
     }
-
     return node;
   }
 
-  Node *findMin(Node *node) {
-    if (node == nullptr) {
-      return nullptr;
-    }
-    while (node && node->leftChild != nullptr) {
-      node = node->leftChild;
-    }
-    return node;
-  }
-
-  Node *findMax(Node *node) {
-    while (node && node->rightChild != nullptr) {
-      node = node->rightChild;
-    }
-    return node;
-  }
-
-  // dfs
+  // by using dfs
   void preorder(Node *node) {
-    // Root -> Left -> Right
+    // root -> left -> right
     // used to clone or copy a tree
     if (node == nullptr) {
       return;
@@ -97,7 +74,7 @@ private:
     preorder(node->rightChild);
   }
   void inorder(Node *node) {
-    // Left -> Root -> Right
+    // left -> root -> right
     // visits the nodes in ascending (sorted) order
     if (node == nullptr) {
       return;
@@ -107,8 +84,8 @@ private:
     inorder(node->rightChild);
   }
   void postorder(Node *node) {
-    // Left -> Right -> Root
-    // useful for deletion and memory cleanup (like the clear()
+    // left -> right -> root
+    // useful for deletion and memory cleanup
     if (node == nullptr) {
       return;
     }
@@ -117,13 +94,44 @@ private:
     cout << node->data << " ";
   }
 
+  Node *findMin(Node *node) {
+    if (node == nullptr) {
+      return node;
+    }
+    while (node && node->leftChild != nullptr) {
+      node = node->leftChild;
+    }
+    return node;
+  }
+  Node *findMax(Node *node) {
+    if (node == nullptr) {
+      return node;
+    }
+    while (node && node->rightChild != nullptr) {
+      node = node->rightChild;
+    }
+    return node;
+  }
+
+  int getHeight(Node *node) {
+    // base case
+    if (node == nullptr) {
+      return 0;
+    }
+
+    int leftHeight = getHeight(node->leftChild);
+    int rightHeight = getHeight(node->rightChild);
+
+    // take the larger height and add 1 for the current level
+    return max(leftHeight, rightHeight) + 1;
+  }
   bool searchVal(Node *node, int val) {
     if (node == nullptr) {
-      return false; // Not found
+      return false;
     }
 
     if (val == node->data) {
-      return true; // Found!
+      return true;
     }
 
     if (val < node->data) {
@@ -132,35 +140,6 @@ private:
       return searchVal(node->rightChild, val);
     }
   }
-
-  int getHeight(Node *node) {
-    if (node == nullptr) {
-      // Base case: empty tree has height -1 (or 0 depending on definition)
-      return 0;
-    }
-
-    int leftHeight = getHeight(node->leftChild);
-    int rightHeight = getHeight(node->rightChild);
-
-    // Take the larger height and add 1 for the current level
-    return max(leftHeight, rightHeight) + 1;
-  }
-
-  void clear(Node *node) {
-    if (node == nullptr) {
-      return; // Base case: nothing to delete
-    }
-
-    // 1. Go down the left branch completely
-    clear(node->leftChild);
-    // 2. Go down the right branch completely
-    clear(node->rightChild);
-    // 3. Delete the current node safely after its children are gone
-    // std::cout << "Deleting node: " << node->data << std::endl; // Optional
-    // debug line
-    delete node;
-  }
-
   bool isIdentical(Node *root1, Node *root2) {
     // Base Case 1: Both nodes are empty (Identical)
     if (root1 == nullptr && root2 == nullptr) {
@@ -178,30 +157,38 @@ private:
            isIdentical(root1->leftChild, root2->leftChild) &&
            isIdentical(root1->rightChild, root2->rightChild);
   }
+  void clear(Node *node) {
+    if (node == nullptr) {
+      return;
+    }
+    clear(node->leftChild);
+    clear(node->rightChild);
+    // delete the current node safely after its children are gone
+    // cout << "Deleting node: " << node->data << endl;
+    delete node;
+  }
 
-  // Utility function to separately print nodes other than the root(
-  // recursively)
-  void printNodes(const string &padding, const string &edge, Node *node,
-                  bool hasLeftSibling) {
+  void printTree(const string &padding, const string &edge, Node *node,
+                 bool hasLeftSibling) {
     if (node != nullptr) {
       cout << endl << padding << edge << node->data;
 
-      // If the current node is a leaf
+      // if the current node is a leaf
       if ((node->leftChild == nullptr) && (node->rightChild == nullptr)) {
         cout << endl << padding;
         if (hasLeftSibling) {
           cout << "|";
         }
       } else {
-        // If the current node is not a leaf, extend the spacing
+        // if the current node is not a leaf, extend the spacing
         string newPadding = padding + (hasLeftSibling ? "|    " : "     ");
 
-        // Process right side first (prints higher up on the screen)
-        printNodes(newPadding, "|----", node->rightChild,
-                   node->leftChild != nullptr);
+        // process right side first (prints higher up on the screen)
+        printTree(newPadding, "|----", node->rightChild,
+                  node->leftChild != nullptr);
 
-        // Process left side second (prints lower down on the screen)
-        printNodes(newPadding, "|____", node->leftChild, false);
+        // process left side second (prints lower down on the screen)
+        printTree(newPadding, "|____", node->leftChild, false);
       }
     }
   }
@@ -209,8 +196,8 @@ private:
 public:
   BinarySearchTree() : root(nullptr) {}
   ~BinarySearchTree() {
-    clear(root);    // Passes the root to start the clean-up process
-    root = nullptr; // Good practice to avoid a dangling pointer
+    clear(root);
+    root = nullptr;
   }
 
   void insertVal(int val) { root = insertVal(root, val); }
@@ -237,7 +224,6 @@ public:
     Node *temp = findMin(root);
     return temp->data;
   }
-
   int findMax() {
     if (root == nullptr) {
       cout << "Empty tree" << endl;
@@ -247,13 +233,12 @@ public:
     return temp->data;
   }
 
-  bool searchVal(int val) { return searchVal(root, val); }
-  bool isEmpty() { return root == nullptr; }
   int getHeight() { return getHeight(root); }
-
+  bool searchVal(int val) { return searchVal(root, val); }
   bool isIdentical(const BinarySearchTree &otherTree) {
     return isIdentical(this->root, otherTree.root);
   }
+  bool isEmpty() { return root == nullptr; }
 
   void printTree() {
     if (root == nullptr) {
@@ -262,101 +247,8 @@ public:
     }
 
     cout << root->data;
-    printNodes("", "|----", root->rightChild, root->leftChild != nullptr);
-    printNodes("", "|____", root->leftChild, false);
+    printTree("", "|----", root->rightChild, root->leftChild != nullptr);
+    printTree("", "|____", root->leftChild, false);
     cout << endl;
   }
 };
-
-/*
-        private:
-    void printNodesPreorder(const string &padding, const string &edge, Node
-*node, bool hasRightSibling) { if (node != nullptr) { cout << endl << padding <<
-edge << node->data;
-
-            if ((node->leftChild == nullptr) && (node->rightChild == nullptr)) {
-                cout << endl << padding;
-                if (hasRightSibling) cout << "|";
-            } else {
-                string newPadding = padding + (hasRightSibling ? "|    " : " ");
-
-                // 1. Process Left child first (Prints on TOP)
-                printNodesPreorder(newPadding, "|----", node->leftChild,
-node->rightChild != nullptr);
-
-                // 2. Process Right child second (Prints on BOTTOM)
-                printNodesPreorder(newPadding, "|____", node->rightChild,
-false);
-            }
-        }
-    }
-
-public:
-    void printTreePreorder() {
-        if (root == nullptr) return;
-        cout << root->data;
-        printNodesPreorder("", "|----", root->leftChild, root->rightChild !=
-nullptr); printNodesPreorder("", "|____", root->rightChild, false); cout <<
-endl;
-    }
-
-
-
-
-
-    private:
-        void printNodesInorder(const string &padding, Node *node, bool isLeft) {
-            if (node != nullptr) {
-                // 1. Traverse Left Subtree completely first (Top of screen)
-                printNodesInorder(padding + (isLeft ? "     " : "|    "),
-node->leftChild, true);
-
-                // 2. Process Current Node
-                cout << padding << (isLeft ? "┌___ " : "└--- ") << node->data <<
-endl;
-
-                // 3. Traverse Right Subtree completely last (Bottom of screen)
-                printNodesInorder(padding + (isLeft ? "|    " : "     "),
-node->rightChild, false);
-            }
-        }
-
-    public:
-        void printTreeInorder() {
-            if (root == nullptr) return;
-            // Start processing the root in the middle layout
-            printNodesInorder("", root->leftChild, true);
-            cout << root->data << " (Root)" << endl;
-            printNodesInorder("", root->rightChild, false);
-        }
-
-
-
-
-
-        private:
-            void printNodesPostorder(const string &padding, const string &edge,
-Node *node, bool hasSiblings) { if (node != nullptr) { if ((node->leftChild !=
-nullptr) || (node->rightChild != nullptr)) { string newPadding = padding +
-(hasSiblings ? "|    " : "     ");
-                        // 1. Process Left Subtree
-                        printNodesPostorder(newPadding, "|----",
-node->leftChild, node->rightChild != nullptr);
-                        // 2. Process Right Subtree
-                        printNodesPostorder(newPadding, "|____",
-node->rightChild, false);
-                    }
-
-                    // 3. Process Current Node Last
-                    cout << endl << padding << edge << node->data;
-                }
-            }
-
-        public:
-            void printTreePostorder() {
-                if (root == nullptr) return;
-                printNodesPostorder("", "|----", root->leftChild,
-root->rightChild != nullptr); printNodesPostorder("", "|____", root->rightChild,
-false); cout << endl << root->data << " (Root)" << endl;
-            }
-        */

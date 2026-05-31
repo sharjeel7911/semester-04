@@ -1,4 +1,5 @@
 #include <iostream>
+using namespace std;
 
 struct Node {
   int data;
@@ -42,319 +43,260 @@ public:
 
 // -----------------------------------------------
 
-#include <algorithm>
-#include <iostream>
-#include <queue>
-#include <stack>
-using namespace std;
-
-template <class T> struct Node {
-  T data;
-  Node<T> *leftChild;
-  Node<T> *rightChild;
-
-  Node(T val) : data(val), leftChild(nullptr), rightChild(nullptr) {}
-};
-
-//------------------------------------------------------------------------------------------------------------------
-// ===== BINARY TREE =====
-//------------------------------------------------------------------------------------------------------------------
-
-template <class T> class BinaryTree {
+class BinarySearchTree {
 private:
-  Node<T> *root;
+  Node *root;
 
-  // Helper function for recursive insertion
-  Node<T> *insertHelper(Node<T> *node, T val) {
+  // ------------------------------------------
+  // private recursive helper functions
+
+  Node *insertVal(Node *node, int val) {
     if (node == nullptr) {
-      return new Node<T>(val);
+      return new Node(val);
     }
     if (val < node->data) {
-      node->leftChild = insertHelper(node->leftChild, val);
-    } else {
-      node->rightChild = insertHelper(node->rightChild, val);
+      node->leftChild = insertVal(node->leftChild, val);
+    } else if (val > node->data) {
+      node->rightChild = insertVal(node->rightChild, val);
     }
     return node;
   }
 
-  void insert(T val) { root = insertHelper(root, val); }
-
-  // Helper function for deletion
-  Node<T> *deleteHelper(Node<T> *node, T val) {
-    if (node == nullptr)
-      return nullptr;
+  Node *deleteVal(Node *node, int val) {
+    if (node == nullptr) {
+      return node;
+    }
 
     if (val < node->data) {
-      node->leftChild = deleteHelper(node->leftChild, val);
+      node->leftChild = deleteVal(node->leftChild, val);
     } else if (val > node->data) {
-      node->rightChild = deleteHelper(node->rightChild, val);
+      node->rightChild = deleteVal(node->rightChild, val);
     } else {
-      // Node with only one child or no child
+      // value found
       if (node->leftChild == nullptr) {
-        Node<T> *temp = node->rightChild;
+        // case 1 & 2: no child or only one child
+        Node *temp = node->rightChild;
         delete node;
         return temp;
       } else if (node->rightChild == nullptr) {
-        Node<T> *temp = node->leftChild;
+        Node *temp = node->leftChild;
         delete node;
         return temp;
+      } else {
+        // case 3: node has 2 children
+        // find the minimum val in the right subtree and del
+        Node *temp = findMin(node->rightChild);
+        node->data = temp->data;
+        node->rightChild = deleteVal(node->rightChild, temp->data);
       }
-
-      // Node with two children: get the inorder successor
-      Node<T> *successor = findMinHelper(node->rightChild);
-      node->data = successor->data;
-      node->rightChild = deleteHelper(node->rightChild, successor->data);
     }
     return node;
   }
 
-  void deleteNode(T val) {
-    if (isEmpty()) {
-      cout << "Tree is empty." << endl;
+  // by using dfs
+  void preorder(Node *node) {
+    // root -> left -> right
+    // used to clone or copy a tree
+    if (node == nullptr) {
       return;
     }
-    if (!search(val)) {
-      cout << "Value " << val << " not found." << endl;
-      return;
-    }
-    root = deleteHelper(root, val);
-    cout << "Value " << val << " deleted." << endl;
+    cout << node->data << " ";
+    preorder(node->leftChild);
+    preorder(node->rightChild);
   }
 
-  // Helper function for recursive search
-  Node<T> *searchHelper(Node<T> *node, T val) {
-    if (node == nullptr)
-      return nullptr;
-    if (node->data == val)
+  void inorder(Node *node) {
+    // left -> root -> right
+    // visits the nodes in ascending (sorted) order
+    if (node == nullptr) {
+      return;
+    }
+    inorder(node->leftChild);
+    cout << node->data << " ";
+    inorder(node->rightChild);
+  }
+
+  void postorder(Node *node) {
+    // left -> right -> root
+    // useful for deletion and memory cleanup
+    if (node == nullptr) {
+      return;
+    }
+    postorder(node->leftChild);
+    postorder(node->rightChild);
+    cout << node->data << " ";
+  }
+
+  Node *findMin(Node *node) {
+    if (node == nullptr) {
       return node;
-    if (val < node->data)
-      return searchHelper(node->leftChild, val);
-    return searchHelper(node->rightChild, val);
-  }
-
-  // Helper function for inorder traversal
-  void inorderHelper(Node<T> *node) {
-    if (node == nullptr)
-      return;
-    inorderHelper(node->leftChild);
-    cout << node->data << " ";
-    inorderHelper(node->rightChild);
-  }
-
-  // Helper function for preorder traversal
-  void preorderHelper(Node<T> *node) {
-    if (node == nullptr)
-      return;
-    cout << node->data << " ";
-    preorderHelper(node->leftChild);
-    preorderHelper(node->rightChild);
-  }
-
-  // Helper function for postorder traversal
-  void postorderHelper(Node<T> *node) {
-    if (node == nullptr)
-      return;
-    postorderHelper(node->leftChild);
-    postorderHelper(node->rightChild);
-    cout << node->data << " ";
-  }
-
-  // Helper function for getting height
-  int getHeightHelper(Node<T> *node) {
-    if (node == nullptr)
-      return 0;
-    return 1 + max(getHeightHelper(node->leftChild),
-                   getHeightHelper(node->rightChild));
-  }
-
-  // Helper function for counting nodes
-  int countNodesHelper(Node<T> *node) {
-    if (node == nullptr)
-      return 0;
-    return 1 + countNodesHelper(node->leftChild) +
-           countNodesHelper(node->rightChild);
-  }
-
-  // Helper function for finding minimum
-  Node<T> *findMinHelper(Node<T> *node) {
-    if (node == nullptr)
-      return nullptr;
-    while (node->leftChild != nullptr) {
+    }
+    while (node && node->leftChild != nullptr) {
       node = node->leftChild;
     }
     return node;
   }
 
-  // Helper function for finding maximum
-  Node<T> *findMaxHelper(Node<T> *node) {
-    if (node == nullptr)
-      return nullptr;
-    while (node->rightChild != nullptr) {
+  Node *findMax(Node *node) {
+    if (node == nullptr) {
+      return node;
+    }
+    while (node && node->rightChild != nullptr) {
       node = node->rightChild;
     }
     return node;
   }
 
-  // Helper function for deleting entire tree
-  void deleteTreeHelper(Node<T> *node) {
-    if (node == nullptr)
+  int getHeight(Node *node) {
+    // base case
+    if (node == nullptr) {
+      return 0;
+    }
+
+    int leftHeight = getHeight(node->leftChild);
+    int rightHeight = getHeight(node->rightChild);
+
+    // take the larger height and add 1 for the current level
+    return max(leftHeight, rightHeight) + 1;
+  }
+
+  bool searchVal(Node *node, int val) {
+    if (node == nullptr) {
+      return false;
+    }
+
+    if (val == node->data) {
+      return true;
+    }
+
+    if (val < node->data) {
+      return searchVal(node->leftChild, val);
+    } else {
+      return searchVal(node->rightChild, val);
+    }
+  }
+
+  bool isIdentical(Node *root1, Node *root2) {
+    // base case 1: both nodes are empty (identical)
+    if (root1 == nullptr && root2 == nullptr) {
+      return true;
+    }
+
+    // base case 2: one node is empty but the other isn't (not identical)
+    if (root1 == nullptr || root2 == nullptr) {
+      return false;
+    }
+
+    // case 3: both nodes exist. check current data and recursively check
+    // subtrees
+    return (root1->data == root2->data) &&
+           isIdentical(root1->leftChild, root2->leftChild) &&
+           isIdentical(root1->rightChild, root2->rightChild);
+  }
+
+  void clear(Node *node) {
+    if (node == nullptr) {
       return;
-    deleteTreeHelper(node->leftChild);
-    deleteTreeHelper(node->rightChild);
+    }
+
+    // 1. go down the left branch completely
+    clear(node->leftChild);
+    // 2. go down the right branch completely
+    clear(node->rightChild);
+    // 3. delete the current node safely after its children are gone
     delete node;
   }
 
-  // Helper function to find LCA
-  Node<T> *findLCAHelper(Node<T> *node, T val1, T val2) {
-    if (node == nullptr)
-      return nullptr;
-    if (val1 < node->data && val2 < node->data) {
-      return findLCAHelper(node->leftChild, val1, val2);
+  void printTree(const string &padding, const string &edge, Node *node,
+                 bool hasLeftSibling) {
+    if (node != nullptr) {
+      cout << endl << padding << edge << node->data;
+
+      // if the current node is a leaf
+      if ((node->leftChild == nullptr) && (node->rightChild == nullptr)) {
+        cout << endl << padding;
+        if (hasLeftSibling) {
+          cout << "|";
+        }
+      } else {
+        // if the current node is not a leaf, extend the spacing
+        string newPadding = padding + (hasLeftSibling ? "|    " : "     ");
+
+        // process right side first (prints higher up on the screen)
+        printTree(newPadding, "|----", node->rightChild,
+                  node->leftChild != nullptr);
+
+        // process left side second (prints lower down on the screen)
+        printTree(newPadding, "|____", node->leftChild, false);
+      }
     }
-    if (val1 > node->data && val2 > node->data) {
-      return findLCAHelper(node->rightChild, val1, val2);
-    }
-    return node;
-  }
-
-  // Helper function to check if tree is balanced
-  pair<bool, int> isBalancedHelper(Node<T> *node) {
-    if (node == nullptr)
-      return {true, 0};
-
-    auto leftResult = isBalancedHelper(node->leftChild);
-    if (!leftResult.first)
-      return {false, 0};
-
-    auto rightResult = isBalancedHelper(node->rightChild);
-    if (!rightResult.first)
-      return {false, 0};
-
-    int heightDiff = abs(leftResult.second - rightResult.second);
-    if (heightDiff > 1)
-      return {false, 0};
-
-    return {true, 1 + max(leftResult.second, rightResult.second)};
   }
 
 public:
-  BinaryTree() : root(nullptr) {}
+  // constructor
+  BinarySearchTree() : root(nullptr) {}
 
-  ~BinaryTree() { deleteTreeHelper(root); }
+  // destructor
+  ~BinarySearchTree() {
+    clear(root);
+    root = nullptr;
+  }
 
-  bool isEmpty() { return root == nullptr; }
+  // public interface functions
+  void insertVal(int val) { root = insertVal(root, val); }
+  void deleteVal(int val) { root = deleteVal(root, val); }
 
-  bool search(T val) { return searchHelper(root, val) != nullptr; }
-
-  void inorder() {
-    if (isEmpty()) {
-      cout << "Tree is empty." << endl;
-      return;
-    }
-    cout << "Inorder: ";
-    inorderHelper(root);
+  void preorder() {
+    preorder(root);
     cout << endl;
   }
 
-  void preorder() {
-    if (isEmpty()) {
-      cout << "Tree is empty." << endl;
-      return;
-    }
-    cout << "Preorder: ";
-    preorderHelper(root);
+  void inorder() {
+    inorder(root);
     cout << endl;
   }
 
   void postorder() {
-    if (isEmpty()) {
-      cout << "Tree is empty." << endl;
-      return;
-    }
-    cout << "Postorder: ";
-    postorderHelper(root);
+    postorder(root);
     cout << endl;
   }
 
-  void levelorder() {
-    if (isEmpty()) {
-      cout << "Tree is empty." << endl;
+  int findMin() {
+    if (root == nullptr) {
+      cout << "Empty tree" << endl;
+      return -99;
+    }
+    Node *temp = findMin(root);
+    return temp->data;
+  }
+
+  int findMax() {
+    if (root == nullptr) {
+      cout << "Empty tree" << endl;
+      return -99;
+    }
+    Node *temp = findMax(root);
+    return temp->data;
+  }
+
+  int getHeight() { return getHeight(root); }
+  bool searchVal(int val) { return searchVal(root, val); }
+
+  bool isIdentical(const BinarySearchTree &otherTree) {
+    return isIdentical(this->root, otherTree.root);
+  }
+
+  bool isEmpty() { return root == nullptr; }
+
+  void printTree() {
+    if (root == nullptr) {
+      cout << "Empty tree" << endl;
       return;
     }
 
-    queue<Node<T> *> q;
-    q.push(root);
-    cout << "Level order: ";
-
-    while (!q.empty()) {
-      Node<T> *node = q.front();
-      q.pop();
-      cout << node->data << " ";
-
-      if (node->leftChild != nullptr)
-        q.push(node->leftChild);
-      if (node->rightChild != nullptr)
-        q.push(node->rightChild);
-    }
+    cout << root->data;
+    printTree("", "|----", root->rightChild, root->leftChild != nullptr);
+    printTree("", "|____", root->leftChild, false);
     cout << endl;
-  }
-
-  int getHeight() { return getHeightHelper(root); }
-
-  int countNodes() { return countNodesHelper(root); }
-
-  T findMin() {
-    if (isEmpty()) {
-      cout << "Tree is empty." << endl;
-      return T();
-    }
-    return findMinHelper(root)->data;
-  }
-
-  T findMax() {
-    if (isEmpty()) {
-      cout << "Tree is empty." << endl;
-      return T();
-    }
-    return findMaxHelper(root)->data;
-  }
-
-  T findLCA(T val1, T val2) {
-    if (isEmpty()) {
-      cout << "Tree is empty." << endl;
-      return T();
-    }
-    if (!search(val1) || !search(val2)) {
-      cout << "One or both values not found." << endl;
-      return T();
-    }
-    Node<T> *lca = findLCAHelper(root, val1, val2);
-    return lca->data;
-  }
-
-  bool isBalanced() { return isBalancedHelper(root).first; }
-
-  void displayTreeStructure() {
-    if (isEmpty()) {
-      cout << "Tree is empty." << endl;
-      return;
-    }
-    cout << "\nTree Structure (Level Order with indentation):" << endl;
-    queue<pair<Node<T> *, int>> q;
-    q.push({root, 0});
-
-    while (!q.empty()) {
-      auto [node, level] = q.front();
-      q.pop();
-
-      for (int i = 0; i < level * 4; i++)
-        cout << " ";
-      cout << node->data << endl;
-
-      if (node->leftChild != nullptr)
-        q.push({node->leftChild, level + 1});
-      if (node->rightChild != nullptr)
-        q.push({node->rightChild, level + 1});
-    }
   }
 };
