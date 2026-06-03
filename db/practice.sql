@@ -662,7 +662,6 @@ RENAME TABLE companies TO suppliers;
 ALTER TABLE suppliers
 RENAME TO companies;        
 
-RENAME TABLE companies TO suppliers;        
         
         
 ALTER TABLE suppliers

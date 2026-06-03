@@ -4,6 +4,7 @@ SET SQL_SAFE_UPDATES = 0;
 -- LEVEL 0: PAKISTAN CENSUS DATABASE  
 -- ============================================================================
 
+-- DROP DATABASE IF EXISTS PakistanCensusDatabase;
 CREATE DATABASE IF NOT EXISTS PakistanCensusDatabase;
 USE PakistanCensusDatabase;
 
