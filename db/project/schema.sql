@@ -4,7 +4,7 @@ SET SQL_SAFE_UPDATES = 0;
 -- LEVEL 0: PAKISTAN CENSUS DATABASE  
 -- ============================================================================
 
--- DROP DATABASE IF EXISTS PakistanCensusDatabase;
+-- DROP DATABASE PakistanCensusDatabase;
 CREATE DATABASE IF NOT EXISTS PakistanCensusDatabase;
 USE PakistanCensusDatabase;
 
@@ -440,37 +440,37 @@ CREATE TABLE IF NOT EXISTS Migration_History (
 
 -- 1. individual citizen demographic composite indexes
 -- optimizes national population tables grouped by sex, religion, and nationality without full table scans
-CREATE INDEX idx_person_demographic_metrics 
-ON Person (sex_id, religion_id, nationality_id);
+-- CREATE INDEX idx_person_demographic_metrics 
+-- ON Person (sex_id, religion_id, nationality_id);
 
 -- 2. education, literacy, and age-cohort slicing covering index
 -- includes date_of_birth to evaluate age-brackets dynamically alongside literacy metrics
-CREATE INDEX idx_person_education_literacy_age 
-ON Person (education_level_id, is_literate, date_of_birth);
+-- CREATE INDEX idx_person_education_literacy_age 
+-- ON Person (education_level_id, is_literate, date_of_birth);
 
 -- 3. economic workforce profiling covering index
 -- optimizes multi-table group-by pipelines running analytics across industries, jobs, and earnings
-CREATE INDEX idx_person_economic_profile 
-ON Person (employment_status_id, occupation_id, industry_id, monthly_income);
+-- CREATE INDEX idx_person_economic_profile 
+-- ON Person (employment_status_id, occupation_id, industry_id, monthly_income);
 
 -- 4. geographical drill-down lookups (covering index pattern)
 -- allows fast indexing down the chain without jumping into data blocks prematurely
-CREATE INDEX idx_division_province ON Division (province_id, division_name);
-CREATE INDEX idx_district_division ON District (division_id, district_name);
-CREATE INDEX idx_tehsil_district   ON Tehsil (district_id, tehsil_name);
-CREATE INDEX idx_uc_tehsil_class   ON Union_Council (tehsil_id, union_council_classification_id);
+-- CREATE INDEX idx_division_province ON Division (province_id, division_name);
+-- CREATE INDEX idx_district_division ON District (division_id, district_name);
+-- CREATE INDEX idx_tehsil_district   ON Tehsil (district_id, tehsil_name);
+-- CREATE INDEX idx_uc_tehsil_class   ON Union_Council (tehsil_id, union_council_classification_id);
 
 -- 5. internal migration stream tracer composite index
 -- pairs origin district with the destination citizen id to trace cross-provincial displacement vectors
-CREATE INDEX idx_migration_origin_stream 
-ON Migration_History (previous_district_id, person_id);
+-- CREATE INDEX idx_migration_origin_stream 
+-- ON Migration_History (previous_district_id, person_id);
 
 -- 6. complex multi-household structural metrics composite index
 -- optimizes building-density surveys where structural utility access correlates with the census block
-CREATE INDEX idx_structure_block_utilities 
-ON Structure (census_block_id, structure_type_id, water_source_id, lighting_source_id);
+-- CREATE INDEX idx_structure_block_utilities 
+-- ON Structure (census_block_id, structure_type_id, water_source_id, lighting_source_id);
 
 -- 7. multi-tenant residential & tracking analytics index
 -- helps match sub-tokens and category classifications instantaneously during household processing runs
-CREATE INDEX idx_household_cycle_category 
-ON Household (census_id, household_category_id, residential_status_type_id);
+-- CREATE INDEX idx_household_cycle_category 
+-- ON Household (census_id, household_category_id, residential_status_type_id);
