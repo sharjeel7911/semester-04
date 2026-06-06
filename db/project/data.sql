@@ -92,7 +92,7 @@ INSERT INTO Industry (industry_name) VALUES
 
 INSERT INTO Relationship_Type (relationship_name) VALUES 
 ('Head of household'), ('Spouse'), ('Biological child'), ('Adopted child'), 
-('Parent'), ('Sibling'), ('Grandchild'), ('Non relative'),('Grandparent'), 
+('Parent'), ('Sibling'), ('Grandchild'), ('Grandparent'), 
 ('In-Law'), ('Non-Relative'), ('Servant/Employee');
 
 -- --------------------------------------------------
