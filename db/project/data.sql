@@ -60,7 +60,7 @@ INSERT INTO Mother_Tongue (tongue_name) VALUES
 
 INSERT INTO Education_Level (level_name) VALUES 
 ('Uneducated'), ('Primary'), ('Middle'), ('Matriculation'), 
-('Intermediate'), ('Bachelors'), ('Masters'), ('Doctorate');
+('Intermediate'), ('Bachelors'), ('Masters'), ('PHD');
 
 INSERT INTO Employment_Status (status_name) VALUES
 ('Employed Full-Time'), ('Employed Part-Time'), ('Self-Employed'),
@@ -535,9 +535,9 @@ INSERT INTO Household (structure_id, census_id, household_category_id, residenti
 -- ============================================================================
 
 INSERT INTO Person (household_id, first_name, last_name, cnic_number, sex_id, date_of_birth, nationality_id, religion_id, mother_tongue_id, marital_status_id, relationship_type_id, head_person_id, is_literate, education_level_id, currently_attending_school, employment_status_id, occupation_id, industry_id, monthly_income, data_entry_operator_id, created_date) VALUES
-(1, 'Muhammad', 'Khan', '12345-6000001-1', 1, '1965-03-15', 1, 1, 1, 2, 1, NULL, 1, 4, 0, 1, 8, 5, 45000.00, 31, '2023-02-20 08:00:00'),
-(1, 'Fatima', 'Khan', '12345-6000002-3', 2, '1970-05-22', 1, 1, 1, 2, 2, 1, 1, 3, 0, 8, NULL, NULL, NULL, 31, '2023-02-20 08:05:00'),
-(1, 'Ali', 'Khan', '12345-6000003-5', 1, '1995-08-10', 1, 1, 1, 1, 3, 1, 1, 5, 1, 6, 12, 2, 0.00, 31, '2023-02-20 08:10:00'),
+(1, 'Muhammad', 'Khan', '12345-6000001-1', 1, '1965-03-15', 1, 1, 1, 2, 1, NULL, 1, 7, 0, 1, 8, 5, 45000.00, 31, '2023-02-20 08:00:00'),
+(1, 'Fatima', 'Khan', '12345-6000002-3', 2, '1970-05-22', 1, 1, 1, 2, 2, 1, 1, 8, 0, 8, NULL, NULL, NULL, 31, '2023-02-20 08:05:00'),
+(1, 'Ali', 'Khan', '12345-6000003-5', 1, '1995-08-10', 1, 1, 1, 1, 3, 1, 1, 7, 1, 6, 12, 2, 0.00, 31, '2023-02-20 08:10:00'),
 (1, 'Ayesha', 'Khan', '12345-6000004-7', 2, '1998-11-03', 1, 1, 1, 1, 3, 1, 1, 5, 1, 6, NULL, NULL, 0.00, 31, '2023-02-20 08:15:00'),
 (1, 'Hassan', 'Khan', '12345-6000005-9', 1, '2002-02-28', 1, 1, 1, 1, 3, 1, 1, 2, 1, 6, NULL, NULL, 0.00, 31, '2023-02-20 08:20:00'),
 
@@ -548,7 +548,7 @@ INSERT INTO Person (household_id, first_name, last_name, cnic_number, sex_id, da
 
 (3, 'Rashid', 'Hassan', '12345-6000010-8', 1, '1960-01-22', 1, 1, 2, 2, 1, NULL, 1, 3, 0, 1, 1, 1, 42000.00, 32, '2023-02-20 08:45:00'),
 (3, 'Zainab', 'Hassan', '12345-6000011-0', 2, '1965-06-18', 1, 1, 2, 2, 2, 10, 1, 2, 0, 8, NULL, NULL, NULL, 32, '2023-02-20 08:50:00'),
-(3, 'Malik', 'Hassan', '12345-6000012-2', 1, '1992-10-30', 1, 1, 2, 1, 3, 10, 1, 5, 0, 1, 3, 14, 35000.00, 32, '2023-02-20 08:55:00'),
+(3, 'Malik', 'Hassan', '12345-6000012-2', 1, '1992-10-30', 1, 1, 2, 1, 3, 10, 1, 8, 0, 1, 3, 14, 35000.00, 32, '2023-02-20 08:55:00'),
 (3, 'Hina', 'Hassan', '12345-6000013-4', 2, '2000-03-12', 1, 1, 2, 1, 3, 10, 1, 4, 1, 6, NULL, NULL, 0.00, 32, '2023-02-20 09:00:00'),
 
 (4, 'Nasir', 'Hussain', '12345-6000014-6', 1, '1962-11-05', 1, 1, 2, 2, 1, NULL, 1, 3, 0, 1, 7, 8, 48000.00, 32, '2023-02-20 09:05:00'),
