@@ -365,3 +365,91 @@ WHERE first_name NOT IN (
     SELECT first_name 
     FROM Census_Staff
 );
+
+
+-- ============================================================================
+-- VIEWS
+-- ============================================================================
+
+-- Shows a complete profile of each citizen, including their full name, age, education, job, and income in plain words instead of codes.
+CREATE OR REPLACE VIEW Citizen_SocioEconomic_Profile AS
+SELECT
+    p.person_id,
+    CONCAT(p.first_name, ' ', p.last_name) AS full_name,
+    p.cnic_number,
+    b.sex_name AS biological_sex,
+    TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS age,
+    r.religion_name AS religion,
+    el.level_name AS education_level,
+    es.status_name AS employment_status,
+    o.occupation_name AS occupation,
+    i.industry_name AS industry,
+    p.monthly_income
+FROM Person p
+INNER JOIN Biological_Sex b ON p.sex_id = b.sex_id
+INNER JOIN Religion r ON p.religion_id = r.religion_id
+LEFT JOIN Education_Level el ON p.education_level_id = el.education_level_id
+LEFT JOIN Employment_Status es ON p.employment_status_id = es.employment_status_id
+LEFT JOIN Occupation o ON p.occupation_id = o.occupation_id
+LEFT JOIN Industry i ON p.industry_id = i.industry_id;
+
+SELECT * FROM Citizen_SocioEconomic_Profile;
+
+-- -----------------------------------------------------------------------
+
+-- Shows the living conditions of each home, tracking things like room counts, clean water access, electricity, and whether it is in a city or a village.
+CREATE OR REPLACE VIEW Household_Living_Standards AS
+SELECT
+	h.household_size,
+    h.number_of_rooms,
+    cb.census_block_code,
+    IF(cb.is_urban, 'Urban', 'Rural') AS area_classification,
+    st.type_name AS structure_type,
+    ws.source_name AS water_supply,
+    ls.source_name AS lighting_source,
+    cfs.fuel_source_name AS cooking_fuel,
+    wrs.status_name AS washroom_type,
+    ks.status_name AS kitchen_type
+FROM Household h
+INNER JOIN Structure s ON h.structure_id = s.structure_id
+INNER JOIN Census_Block cb ON s.census_block_id = cb.census_block_id
+LEFT JOIN Structure_Type st ON s.structure_type_id = st.structure_type_id
+LEFT JOIN Water_Source ws ON s.water_source_id = ws.water_source_id
+LEFT JOIN Lighting_Source ls ON s.lighting_source_id = ls.lighting_source_id
+LEFT JOIN Cooking_Fuel_Source cfs ON s.fuel_source_id = cfs.fuel_source_id
+LEFT JOIN Washroom_Status wrs ON s.washroom_status_id = wrs.washroom_status_id
+LEFT JOIN Kitchen_Status ks ON s.kitchen_status_id = ks.kitchen_status_id;
+
+-- How to query this view:
+SELECT * FROM Household_Living_Standards 
+WHERE area_classification = 'Rural';
+
+-- -----------------------------------------------------------------------
+
+-- Groups Pakistan's geographic areas together to show the total number of census blocks and households in every region at a glance.
+CREATE OR REPLACE VIEW Regional_Administrative_Summary AS
+SELECT
+    p.province_name,
+    dv.division_name,
+    d.district_name,
+    t.tehsil_name,
+    uc.union_council_name,
+    COUNT(cb.census_block_id) AS total_census_blocks,
+    SUM(cb.estimated_household_count) AS gross_estimated_households
+FROM Province p
+INNER JOIN Division dv ON p.province_id = dv.province_id
+INNER JOIN District d ON dv.division_id = d.division_id
+INNER JOIN Tehsil t ON d.district_id = t.district_id
+INNER JOIN Union_Council uc ON t.tehsil_id = uc.tehsil_id
+LEFT JOIN Census_Block cb ON uc.union_council_id = cb.union_council_id
+GROUP BY 
+    p.province_name, 
+    dv.division_name, 
+    d.district_name, 
+    t.tehsil_name, 
+    uc.union_council_name;
+
+SELECT province_name, district_name, SUM(gross_estimated_households) AS total_households
+FROM Regional_Administrative_Summary
+GROUP BY province_name, district_name
+ORDER BY total_households DESC;
