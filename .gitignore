@@ -17,6 +17,7 @@
 !**/*.gitignore
 !**/*.png
 !**/*.sql
+!**/*.odt
 
 # Ignore compiled binaries
 *.out
