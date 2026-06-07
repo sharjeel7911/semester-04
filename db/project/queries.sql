@@ -10,7 +10,7 @@ CREATE OR REPLACE VIEW Most_Populated_Cities AS
 SELECT
     p.province_name,
     d.district_name,
-    SUM(cb.estimated_household_count) AS Total_Population
+    SUM(cb.estimated_household_count) AS total_population
 FROM Province p
 INNER JOIN Division dv ON p.province_id = dv.province_id
 INNER JOIN District d ON dv.division_id = d.division_id
@@ -104,9 +104,7 @@ RIGHT JOIN Census_Block cb ON cs.assigned_census_block_id = cb.census_block_id
 RIGHT JOIN Union_Council uc ON cb.union_council_id = uc.union_council_id
 RIGHT JOIN Tehsil t ON uc.tehsil_id = t.tehsil_id
 RIGHT JOIN District d ON t.district_id = d.district_id
-WHERE cb.is_urban = TRUE 
-  AND cb.estimated_household_count > 300 
-  AND (cs.staff_role IN ('Enumerator', 'Supervisor') OR cs.staff_role IS NULL)
+WHERE cb.is_urban = TRUE AND cb.estimated_household_count > 300 AND (cs.staff_role IN ('Enumerator', 'Supervisor') OR cs.staff_role IS NULL)
 ORDER BY cb.estimated_household_count DESC;
 
 SELECT * FROM Urban_Block;
@@ -129,9 +127,7 @@ RIGHT JOIN Household h ON p.household_id = h.household_id
 RIGHT JOIN Mother_Tongue mt ON p.mother_tongue_id = mt.mother_tongue_id
 RIGHT JOIN Education_Level el ON p.education_level_id = el.education_level_id
 LEFT JOIN Employment_Status es ON p.employment_status_id = es.employment_status_id
-WHERE UPPER(el.level_name) IN ('INTERMEDIATE', 'BACHELORS', 'MASTERS', 'PHD')
-  AND es.status_name = 'Employed Full-Time'
-  AND p.monthly_income > 30000
+WHERE UPPER(el.level_name) IN ('INTERMEDIATE', 'BACHELORS', 'MASTERS', 'PHD') AND es.status_name = 'Employed Full-Time' AND p.monthly_income > 30000
 ORDER BY p.monthly_income DESC;
 
 SELECT * FROM Employed_Person;
@@ -154,8 +150,7 @@ NATURAL JOIN (
     SELECT marital_status_id, first_name, last_name, date_of_birth, monthly_income 
     FROM Person
 ) p
-WHERE ms.status_name = 'Married' 
-  AND p.monthly_income > 20000
+WHERE ms.status_name = 'Married' AND p.monthly_income > 20000
 ORDER BY p.monthly_income DESC;
 
 SELECT * FROM Person_Marital_Report;
@@ -175,8 +170,7 @@ NATURAL JOIN (
     SELECT employment_status_id, first_name, last_name, monthly_income, date_of_birth 
     FROM Person
 ) p
-WHERE es.status_name IN ('Employed Full-Time', 'Self-Employed') 
-  AND p.monthly_income > 30000
+WHERE es.status_name IN ('Employed Full-Time', 'Self-Employed') AND p.monthly_income > 30000
 ORDER BY p.monthly_income DESC;
 
 SELECT * FROM Person_Employment_Report;
@@ -189,10 +183,9 @@ SELECT * FROM Person_Employment_Report;
 -- Maps out the internal management hierarchy of the census field staff team.
 CREATE OR REPLACE VIEW Census_Workforce_Hierarchy AS
 SELECT 
-    CONCAT(emp.first_name, ' ', emp.last_name) AS Staff_Member,
+    CONCAT(emp.first_name, ' ', emp.last_name) AS staff_member,
     emp.staff_role AS Staff_Role,
-    CONCAT(mgr.first_name, ' ', mgr.last_name) AS Direct_Supervisor,
-    mgr.staff_role AS Supervisor_Role
+    CONCAT(mgr.first_name, ' ', mgr.last_name) AS direct_supervisor
 FROM Census_Staff emp
 INNER JOIN Census_Staff mgr ON emp.supervisor_id = mgr.staff_id;
 
@@ -203,9 +196,9 @@ SELECT * FROM Census_Workforce_Hierarchy;
 -- Maps out biological family dynamics by identifying the official household head for each member.
 CREATE OR REPLACE VIEW Family_Head_Mapping AS
 SELECT 
-    CONCAT(member.first_name, ' ', member.last_name) AS Family_Member,
+    CONCAT(member.first_name, ' ', member.last_name) AS family_member,
     member.cnic_number AS Member_CNIC,
-    CONCAT(head.first_name, ' ', head.last_name) AS Household_Head,
+    CONCAT(head.first_name, ' ', head.last_name) AS household_head,
     head.cnic_number AS Head_CNIC
 FROM Person member
 INNER JOIN Person head ON member.head_person_id = head.person_id
@@ -218,16 +211,16 @@ SELECT * FROM Family_Head_Mapping;
 -- NESTED QUERIES (IN, ANY, ALL, NOT IN)
 -- ============================================================================
 
--- Purpose: Retrieves names of citizens who live in crowded families with more than 5 members.
+-- Purpose: Retrieves names of citizens who live in crowded families with more than 4 members.
 SELECT first_name, last_name
 FROM Person
 WHERE household_id IN (
     SELECT household_id
     FROM Household
-    WHERE household_size > 5
+    WHERE household_size > 4
 );
 
--- Purpose: Finds citizens earning more than at least one individual of biological sex 2.
+-- Purpose: Finds citizens earning more than at least one individual of biological sex is male.
 SELECT first_name, monthly_income 
 FROM Person
 WHERE monthly_income > ANY (
@@ -236,25 +229,25 @@ WHERE monthly_income > ANY (
     WHERE sex_id = 2
 );
 
--- Purpose: Finds citizens earning more than every single individual of biological sex 2 combined.
+-- Purpose: Finds citizens earning more than all females.
 SELECT first_name, monthly_income 
 FROM Person 
 WHERE monthly_income > ALL (
-    SELECT monthly_income 
+    SELECT monthly_income
     FROM Person 
-    WHERE sex_id = 2
+    WHERE sex_id = 2 AND monthly_income IS NOT NULL
 );
 
 -- Purpose: Lists all citizens who have never migrated or shifted their residential district.
-SELECT first_name 
+SELECT first_name, last_name 
 FROM Person 
 WHERE person_id NOT IN (
     SELECT person_id 
     FROM Migration_History
 );
 
--- Purpose: Finds citizens earning less than or equal to the absolute lowest salary among biological sex 1.
-SELECT first_name
+-- Purpose: Finds citizens earning less than or equal to the absolute lowest salary among males.
+SELECT first_name, last_name
 FROM Person
 WHERE monthly_income <= ALL (
     SELECT monthly_income
@@ -262,8 +255,8 @@ WHERE monthly_income <= ALL (
     WHERE sex_id = 1
 );
 
--- Purpose: Finds citizens earning less than or equal to at least one individual of biological sex 1.
-SELECT first_name 
+-- Purpose: Finds citizens earning less than or equal to at least one individual of among males.
+SELECT first_name, last_name
 FROM Person 
 WHERE monthly_income <= ANY (
     SELECT monthly_income 
@@ -277,7 +270,7 @@ WHERE monthly_income <= ANY (
 -- ============================================================================
 
 -- Purpose: Identifies citizens who have an active internal migration or relocation history record.
-SELECT p.first_name 
+SELECT p.first_name, p.last_name
 FROM Person p 
 WHERE EXISTS (
     SELECT 1 
@@ -286,7 +279,7 @@ WHERE EXISTS (
 );
 
 -- Purpose: Identifies stable citizens who have zero documented history of changing districts.
-SELECT p.first_name 
+SELECT p.first_name, p.last_name
 FROM Person p 
 WHERE NOT EXISTS (
     SELECT 1 
@@ -330,11 +323,11 @@ FROM Person p
 INNER JOIN Biological_Sex b ON p.sex_id = b.sex_id 
 GROUP BY b.sex_name;
 
--- Purpose: Filters demographic categories to show only biological sexes with more than 3 individuals.
+-- Purpose: Filters demographic categories to show only biological sexes with more than 40 individuals.
 SELECT sex_id, COUNT(*) AS Population 
 FROM Person 
 GROUP BY sex_id
-HAVING COUNT(*) > 3;
+HAVING COUNT(*) > 40;
 
 -- Purpose: Breaks down population counts and average monthly income metrics categorized by religion.
 SELECT r.religion_name, COUNT(*) AS Population, AVG(monthly_income) AS AvgIncome
@@ -348,25 +341,25 @@ GROUP BY r.religion_name;
 -- ============================================================================
 
 -- Purpose: Combines distinct first names from both citizens and field staff, removing duplicate values.
-SELECT first_name FROM Person 
+SELECT first_name, last_name FROM Person 
 UNION 
-SELECT first_name FROM Census_Staff;
+SELECT first_name, last_name FROM Census_Staff;
 
 -- Purpose: Combines all first names from citizens and field staff, preserving every duplicate entry.
-SELECT first_name FROM Person 
+SELECT first_name, last_name FROM Person 
 UNION ALL 
-SELECT first_name FROM Census_Staff;
+SELECT first_name, last_name FROM Census_Staff;
 
--- Purpose: [INTERSECT alternative] Finds common names shared by both active citizens and field census staff.
-SELECT first_name
+-- Purpose:  Finds common names shared by both active citizens and field census staff.
+SELECT first_name, last_name
 FROM Person
 WHERE first_name IN (
     SELECT first_name
     FROM Census_Staff
 );
 
--- Purpose: [EXCEPT / MINUS alternative] Lists first names unique to citizens that do not exist among census staff.
-SELECT first_name 
+-- Purpose: Lists first names unique to citizens that do not exist among census staff.
+SELECT first_name, last_name 
 FROM Person 
 WHERE first_name NOT IN (
     SELECT first_name 
