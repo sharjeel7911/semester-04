@@ -12,7 +12,6 @@
 !**/*.docx
 !**/*.pdf
 !**/*.pptx
-!**/*.zip
 !**/*.md
 !**/*.gitignore
 !**/*.png
