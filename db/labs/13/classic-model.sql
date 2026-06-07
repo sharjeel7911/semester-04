@@ -1,3 +1,6 @@
+
+-- USE XAMPP SERVER FOR THIS CODE
+
 /*
 *********************************************************************
 http://www.mysqltutorial.org
@@ -4057,3 +4060,109 @@ insert  into `products`(`productCode`,`productName`,`productLine`,`productScale`
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- ------------------------------------------------------------------------------------
+
+-- Views
+
+-- Question - 01
+CREATE VIEW Sharjeel AS
+SELECT customerNumber, customerName
+FROM customers
+WHERE customerNumber NOT IN (SELECT DISTINCT customerNumber FROM orders);
+SELECT * FROM Sharjeel;
+
+-- ------------------------------------------------------------------------------------
+
+-- Question - 02
+CREATE VIEW L1F24BSCS0506 AS
+SELECT employeeNumber, CONCAT(firstName, ' ', lastName) AS employeeName
+FROM employees;
+SELECT * FROM L1F24BSCS0506;
+
+-- ------------------------------------------------------------------------------------
+
+-- Question - 03
+ALTER VIEW L1F24BSCS0506 AS
+SELECT employeeNumber, CONCAT(firstName, ' ', lastName) AS employeeName
+FROM employees
+WHERE reportsTo IS NULL;
+SELECT * FROM L1F24BSCS0506;
+
+-- ------------------------------------------------------------------------------------
+
+-- Question - 04
+CREATE VIEW S0506 AS
+SELECT e.employeeNumber, CONCAT(e.firstName, ' ', e.lastName) AS employeeName, o.city
+FROM employees e
+JOIN offices o ON e.officeCode = o.officeCode;
+SELECT * FROM S0506;
+
+-- ------------------------------------------------------------------------------------
+
+-- Stored Procedures
+
+-- Question - 05
+DELIMITER $$
+CREATE PROCEDURE GetAllEmployees()
+BEGIN
+    SELECT * FROM employees;
+END $$
+DELIMITER ;
+CALL GetAllEmployees();
+
+-- ------------------------------------------------------------------------------------
+
+-- Question - 06
+DELIMITER $$
+CREATE PROCEDURE GetEmployeesByOffice(IN office_code VARCHAR(10))
+BEGIN
+    SELECT * FROM employees WHERE officeCode = office_code;
+END $$
+DELIMITER ;
+CALL GetEmployeesByOffice('1');
+
+-- ------------------------------------------------------------------------------------
+
+-- Question - 07
+DELIMITER $$
+CREATE PROCEDURE CountEmployeesOffice6()
+BEGIN
+    SELECT COUNT(*) FROM employees WHERE officeCode = '6';
+END $$
+DELIMITER ;
+CALL CountEmployeesOffice6();
+
+
+-- ------------------------------------------------------------------------------------
+
+-- Question - 08
+DELIMITER $$
+CREATE PROCEDURE GetEmpCountByOffice(IN office_code VARCHAR(10), OUT total INT)
+BEGIN
+    SELECT COUNT(*) INTO total FROM employees WHERE officeCode = office_code;
+END $$
+DELIMITER ;
+CALL GetEmpCountByOffice('1', @total); SELECT @total;
+
+-- ------------------------------------------------------------------------------------
+
+-- Question - 09
+DROP VIEW IF EXISTS Sharjeel;
+DROP PROCEDURE IF EXISTS GetAllEmployees;
+
+-- ------------------------------------------------------------------------------------
+
+-- Question - 10
+DELIMITER $$
+CREATE PROCEDURE GetCustomerByOrder(IN order_num INT)
+BEGIN
+    SELECT c.customerNumber, c.customerName
+    FROM customers c
+    JOIN orders o ON c.customerNumber = o.customerNumber
+    WHERE o.orderNumber = order_num;
+END $$
+DELIMITER ;
+CALL GetCustomerByOrder(10100); 
+
+-- ------------------------------------------------------------------------------------
