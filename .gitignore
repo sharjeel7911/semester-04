@@ -14,9 +14,12 @@
 !**/*.pptx
 !**/*.md
 !**/*.gitignore
+!**/*.jpeg
 !**/*.png
 !**/*.sql
 !**/*.odt
+!**/*.aia
+!**/*.apk
 
 # Ignore compiled binaries
 *.out
