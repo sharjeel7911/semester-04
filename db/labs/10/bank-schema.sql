@@ -345,19 +345,30 @@ ON
 -- ---------------------------------------------------------------------------------------------------------------
 
 -- Question - 08
-SELECT DISTINCT -- DISTINCT because we don't need duplicate names who made more than 1 transaction
-    c.name, s.Account_number
-FROM
+SELECT 
+    c.name, 
+    t.savingAccount_number AS Account_number
+FROM 
     transaction t
-INNER JOIN
-    savingaccounts s 
-ON 
-	t.savingAccount_number = s.Account_number
-INNER JOIN
-    customer c 
-ON 
-	s.customer_id = c.customer_id
-WHERE
+INNER JOIN 
+    savingaccounts s ON t.savingAccount_number = s.Account_number
+INNER JOIN 
+    customer c ON s.customer_id = c.customer_id
+WHERE 
+    YEAR(t.transaction_date) = 2016
+
+UNION
+
+SELECT 
+    c.name, 
+    t.loanAccount_number AS Account_number
+FROM 
+    transaction t
+INNER JOIN 
+    loanaccounts l ON t.loanAccount_number = l.Account_number
+INNER JOIN 
+    customer c ON l.customer_id = c.customer_id
+WHERE 
     YEAR(t.transaction_date) = 2016;
 
 -- ---------------------------------------------------------------------------------------------------------------
