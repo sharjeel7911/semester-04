@@ -8,9 +8,9 @@ using namespace std;
 // ==========================================
 class MaxHeap {
 private:
-    int* arr;         // Pointer to dynamically allocated raw array
-    int capacity;     // Total capacity of the array
-    int size;         // Current number of elements in the heap
+    int* arr;
+    int capacity;
+    int size;         // current number of elements in the heap
 
     int parent(int i) { return (i - 1) / 2; }
     int leftChild(int i) { return (2 * i) + 1; }
@@ -22,8 +22,8 @@ private:
         for (int i = 0; i < size; i++) {
             newArr[i] = arr[i];
         }
-        delete[] arr; // Free old memory
-        arr = newArr;  // Point to new memory
+        delete[] arr;
+        arr = newArr;
     }
 
     void heapifyUp(int i) {
@@ -38,8 +38,12 @@ private:
         int left = leftChild(i);
         int right = rightChild(i);
 
-        if (left < size && arr[left] > arr[maxIndex]) maxIndex = left;
-        if (right < size && arr[right] > arr[maxIndex]) maxIndex = right;
+        if (left < size && arr[left] > arr[maxIndex]) {
+            maxIndex = left;
+        }
+        if (right < size && arr[right] > arr[maxIndex]) {
+            maxIndex = right;
+        }
 
         if (i != maxIndex) {
             swap(arr[i], arr[maxIndex]);
@@ -91,6 +95,20 @@ public:
 
         if (size > 0) heapifyDown(0);
         return maxVal;
+    }
+
+    void heapSort(int arr[], int n) {
+        MaxHeap h(n);
+
+        // Step 1: Insert all elements into the Max-Heap
+        for (int i = 0; i < n; i++) {
+            h.insert(arr[i]);
+        }
+
+        // Step 2: Extract the maximum element one by one and place it at the end of the array to sort it in ascending order
+        for (int i = n - 1; i >= 0; i--) {
+            arr[i] = h.extractMax();
+        }
     }
 
     void print() {
@@ -203,6 +221,21 @@ public:
         return minVal;
     }
 
+    void heapSort(int arr[], int n) {
+        MinHeap h(n);
+
+        // Step 1: Insert all elements into the Max-Heap
+        for (int i = 0; i < n; i++) {
+            h.insert(arr[i]);
+        }
+
+        // Step 2: Extract the maximum element one by one 
+        // and place it at the end of the array to sort it in ascending order
+        for (int i = n - 1; i >= 0; i--) {
+            arr[i] = h.extractMin();
+        }
+    }
+
     void print() {
         for (int i = 0; i < size; i++)  cout << arr[i] << " ";
         cout << "\n";
@@ -220,6 +253,7 @@ public:
         cout << endl;
     }
 };
+
 
 // ==========================================
 // MAIN DRIVER
