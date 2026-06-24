@@ -256,6 +256,32 @@ public:
             cout << i << ". " << qu[i] << endl;
         }
     }
+
+    void printTree(int index, string padding, string edge, bool hasLeftSibling) {
+        if (index >= currSize) return;
+
+        cout << "\n" << padding << edge << qu[index];
+
+        string newPadding = padding + (hasLeftSibling ? "|    " : "     ");
+
+        int right = 2 * index + 2;
+        int left = 2 * index + 1;
+
+        printTree(right, newPadding, "|----", left < currSize);
+        printTree(left, newPadding, "|____", false);
+    }
+
+    void visualize() {
+        if (currSize == 0) {
+            cout << "Empty Heap\n";
+            return;
+        }
+        cout << qu[0];
+
+        printTree(2, "", "|----", currSize > 1);
+        printTree(1, "", "|____", false);
+        cout << endl;
+    }
 };
 
 // ---------------------------------------------------------------------------------------
@@ -269,7 +295,7 @@ int main() {
     pq.enqueue(20);
     pq.enqueue(5);
     pq.enqueue(15);
-
+    pq.visualize();
     pq.display();
 
     cout << "\n--- Dequeueing Elements (By Highest Priority) ---\n";
