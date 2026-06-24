@@ -189,8 +189,12 @@ private:
         int left = leftChild(i);
         int right = rightChild(i);
 
-        if (left < currSize && qu[left] > qu[maxIndex]) maxIndex = left;
-        if (right < currSize && qu[right] > qu[maxIndex]) maxIndex = right;
+        if (left < currSize && qu[left] > qu[maxIndex]) {
+            maxIndex = left;
+        }
+        if (right < currSize && qu[right] > qu[maxIndex]) {
+            maxIndex = right;
+        }
 
         if (i != maxIndex) {
             swap(qu[i], qu[maxIndex]);
