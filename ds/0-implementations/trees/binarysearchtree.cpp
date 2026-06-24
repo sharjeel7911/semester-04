@@ -155,8 +155,7 @@ private:
       return false;
     }
 
-    // Case 3: Both nodes exist. Check current data and recursively check
-    // subtrees
+    // case 3: Both nodes exist. Check current data and recursively check subtrees
     return (root1->data == root2->data) && isIdentical(root1->leftChild, root2->leftChild) && isIdentical(root1->rightChild, root2->rightChild);
   }
   void clear(Node* node) {

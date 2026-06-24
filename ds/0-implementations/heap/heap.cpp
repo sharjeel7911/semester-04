@@ -47,6 +47,21 @@ private:
         }
     }
 
+    void printTree(int index, string padding, string edge, bool hasLeftSibling) {
+        if (index >= size)
+            return;
+
+        cout << "\n" << padding << edge << arr[index];
+
+        string newPadding = padding + (hasLeftSibling ? "|    " : "     ");
+
+        int right = 2 * index + 2;
+        int left = 2 * index + 1;
+
+        printTree(right, newPadding, "|----", left < size);
+        printTree(left, newPadding, "|____", false);
+    }
+
 public:
     MaxHeap(int initialCapacity = 4) {
         capacity = initialCapacity;
@@ -81,6 +96,18 @@ public:
     void print() {
         for (int i = 0; i < size; i++)  cout << arr[i] << " ";
         cout << "\n";
+    }
+
+    void visualize() {
+        if (size == 0) {
+            cout << "Empty Heap\n";
+            return;
+        }
+
+        cout << arr[0];
+        printTree(2, "", "|----", size > 1);
+        printTree(1, "", "|____", false);
+        cout << endl;
     }
 };
 
@@ -130,6 +157,21 @@ private:
         }
     }
 
+    void printTree(int index, string padding, string edge, bool hasLeftSibling) {
+        if (index >= size)
+            return;
+
+        cout << "\n" << padding << edge << arr[index];
+
+        string newPadding = padding + (hasLeftSibling ? "|    " : "     ");
+
+        int right = 2 * index + 2;
+        int left = 2 * index + 1;
+
+        printTree(right, newPadding, "|----", left < size);
+        printTree(left, newPadding, "|____", false);
+    }
+
 public:
     MinHeap(int initialCapacity = 4) {
         capacity = initialCapacity;
@@ -165,6 +207,18 @@ public:
         for (int i = 0; i < size; i++)  cout << arr[i] << " ";
         cout << "\n";
     }
+
+    void visualize() {
+        if (size == 0) {
+            cout << "Empty Heap\n";
+            return;
+        }
+
+        cout << arr[0];
+        printTree(2, "", "|----", size > 1);
+        printTree(1, "", "|____", false);
+        cout << endl;
+    }
 };
 
 // ==========================================
@@ -177,6 +231,7 @@ int main() {
     cout << "--- TESTING MAX-HEAP ---\n";
     MaxHeap maxH;
     for (int x : elements) maxH.insert(x);
+    maxH.visualize();
 
     cout << "Max-Heap structure (Array layout): ";
     maxH.print(); // Root should be 30
@@ -186,11 +241,10 @@ int main() {
     cout << "--- TESTING MIN-HEAP ---\n";
     MinHeap minH;
     for (int x : elements) minH.insert(x);
-
+    minH.visualize();
     cout << "Min-Heap structure (Array layout): ";
     minH.print(); // Root should be 5
     cout << "Extracted Min: " << minH.extractMin() << " (Expected 5)\n";
     cout << "Extracted Min: " << minH.extractMin() << " (Expected 10)\n";
-
     return 0;
 }
