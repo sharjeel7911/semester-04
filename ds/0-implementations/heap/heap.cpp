@@ -44,7 +44,6 @@ private:
         if (right < size && arr[right] > arr[maxIndex]) {
             maxIndex = right;
         }
-
         if (i != maxIndex) {
             swap(arr[i], arr[maxIndex]);
             heapifyDown(maxIndex);
@@ -77,7 +76,7 @@ public:
         delete[] arr;
     }
 
-    void insert(int key) {
+    void insertVal(int key) {
         if (size == capacity) {
             resize();
         }
@@ -86,8 +85,10 @@ public:
         heapifyUp(size - 1);
     }
 
-    int extractMax() {
-        if (size <= 0) throw  underflow_error("Heap Underflow");
+    int deleteVal() {
+        if (size <= 0) {
+            throw  underflow_error("Heap Underflow");
+        }
 
         int maxVal = arr[0];
         arr[0] = arr[size - 1];
@@ -102,12 +103,12 @@ public:
 
         // Step 1: Insert all elements into the Max-Heap
         for (int i = 0; i < n; i++) {
-            h.insert(arr[i]);
+            h.insertVal(arr[i]);
         }
 
         // Step 2: Extract the maximum element one by one and place it at the end of the array to sort it in ascending order
         for (int i = n - 1; i >= 0; i--) {
-            arr[i] = h.extractMax();
+            arr[i] = h.deleteVal();
         }
     }
 
@@ -201,7 +202,7 @@ public:
         delete[] arr;
     }
 
-    void insert(int key) {
+    void insertVal(int key) {
         if (size == capacity) {
             resize();
         }
@@ -210,7 +211,7 @@ public:
         heapifyUp(size - 1);
     }
 
-    int extractMin() {
+    int deleteVal() {
         if (size <= 0) throw  underflow_error("Heap Underflow");
 
         int minVal = arr[0];
@@ -226,13 +227,12 @@ public:
 
         // Step 1: Insert all elements into the Max-Heap
         for (int i = 0; i < n; i++) {
-            h.insert(arr[i]);
+            h.insertVal(arr[i]);
         }
 
-        // Step 2: Extract the maximum element one by one 
-        // and place it at the end of the array to sort it in ascending order
+        // Step 2: Extract the maximum element one by one and place it at the end of the array to sort it in descending order
         for (int i = n - 1; i >= 0; i--) {
-            arr[i] = h.extractMin();
+            arr[i] = h.deleteVal();
         }
     }
 
@@ -264,21 +264,21 @@ int main() {
 
     cout << "--- TESTING MAX-HEAP ---\n";
     MaxHeap maxH;
-    for (int x : elements) maxH.insert(x);
+    for (int x : elements) maxH.insertVal(x);
     maxH.visualize();
 
     cout << "Max-Heap structure (Array layout): ";
     maxH.print(); // Root should be 30
-    cout << "Extracted Max: " << maxH.extractMax() << " (Expected 30)\n";
-    cout << "Extracted Max: " << maxH.extractMax() << " (Expected 20)\n\n";
+    cout << "Extracted Max: " << maxH.deleteVal() << " (Expected 30)\n";
+    cout << "Extracted Max: " << maxH.deleteVal() << " (Expected 20)\n\n";
 
     cout << "--- TESTING MIN-HEAP ---\n";
     MinHeap minH;
-    for (int x : elements) minH.insert(x);
+    for (int x : elements) minH.insertVal(x);
     minH.visualize();
     cout << "Min-Heap structure (Array layout): ";
     minH.print(); // Root should be 5
-    cout << "Extracted Min: " << minH.extractMin() << " (Expected 5)\n";
-    cout << "Extracted Min: " << minH.extractMin() << " (Expected 10)\n";
+    cout << "Extracted Min: " << minH.deleteVal() << " (Expected 5)\n";
+    cout << "Extracted Min: " << minH.deleteVal() << " (Expected 10)\n";
     return 0;
 }

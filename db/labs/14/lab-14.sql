@@ -8,7 +8,7 @@ CREATE DATABASE WeddingDress_0506;
 USE WeddingDress_0506;
 
 -- ------------------------------------------------
--- Task 2
+-- Task 2	
 -- ------------------------------------------------
 
 CREATE TABLE Customer_0506 (
