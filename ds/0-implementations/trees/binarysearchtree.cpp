@@ -201,31 +201,19 @@ private:
 
 public:
   BinarySearchTree() : root(nullptr) {}
-  ~BinarySearchTree() {
-    clear(root);
-    root = nullptr;
-  }
+  ~BinarySearchTree() { clear(root); root = nullptr; }
 
   void insertVal(int val) { root = insertVal(root, val); }
   void deleteVal(int val) { root = deleteVal(root, val); }
 
-  void preorder() {
-    preorder(root);
-    cout << endl;
-  }
-  void inorder() {
-    inorder(root);
-    cout << endl;
-  }
-  void postorder() {
-    postorder(root);
-    cout << endl;
-  }
+  void preorder() { preorder(root); cout << endl; }
+  void inorder() { inorder(root); cout << endl; }
+  void postorder() { postorder(root); cout << endl; }
 
   int findMin() {
     if (root == nullptr) {
       cout << "Empty tree" << endl;
-      return -99;
+      return INT_MIN;
     }
     Node* temp = findMin(root);
     return temp->data;
@@ -233,7 +221,7 @@ public:
   int findMax() {
     if (root == nullptr) {
       cout << "Empty tree" << endl;
-      return -99;
+      return INT_MAX;
     }
     Node* temp = findMax(root);
     return temp->data;
@@ -241,9 +229,7 @@ public:
 
   int getHeight() { return getHeight(root); }
   bool searchVal(int val) { return searchVal(root, val); }
-  bool isIdentical(const BinarySearchTree& otherTree) {
-    return isIdentical(this->root, otherTree.root);
-  }
+  bool isIdentical(const BinarySearchTree& otherTree) { return isIdentical(this->root, otherTree.root); }
   bool isEmpty() { return root == nullptr; }
 
   void printTree() {
