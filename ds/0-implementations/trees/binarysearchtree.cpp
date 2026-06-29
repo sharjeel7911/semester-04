@@ -1,4 +1,5 @@
 #include <iostream>
+#include <climits>
 using namespace std;
 
 struct Node {
@@ -28,7 +29,7 @@ private:
     }
     return node;
   }
-  
+
   Node* deleteVal(Node* node, int val) {
     if (node == nullptr) {
       return node;
@@ -77,7 +78,7 @@ private:
     preorder(node->leftChild);
     preorder(node->rightChild);
   }
-  
+
   void inorder(Node* node) {
     // left -> root -> right
     // visits the nodes in ascending (sorted) order
@@ -88,7 +89,7 @@ private:
     cout << node->data << " ";
     inorder(node->rightChild);
   }
-  
+
   void postorder(Node* node) {
     // left -> right -> root
     // useful for deletion and memory cleanup
@@ -109,7 +110,7 @@ private:
     }
     return node;
   }
-  
+
   Node* findMax(Node* node) {
     if (node == nullptr) {
       return node;
@@ -132,7 +133,7 @@ private:
     // take the larger height and add 1 for the current level
     return max(leftHeight, rightHeight) + 1;
   }
-  
+
   bool searchVal(Node* node, int val) {
     if (node == nullptr) {
       return false;
@@ -149,7 +150,7 @@ private:
       return searchVal(node->rightChild, val);
     }
   }
-  
+
   bool isIdentical(Node* root1, Node* root2) {
     // case 1: both nodes are empty
     if (root1 == nullptr && root2 == nullptr) {
@@ -164,6 +165,26 @@ private:
     // case 3: both nodes exist. check curr data and recursively check subtrees
     return (root1->data == root2->data) && isIdentical(root1->leftChild, root2->leftChild) && isIdentical(root1->rightChild, root2->rightChild);
   }
+
+  int checkBalanced(Node* node) {
+    if (node == nullptr) { return 0; }
+
+    int leftHeight = checkBalanced(node->leftChild);
+    if (leftHeight == -1) {
+      return -1; // left subtree is unbalanced 
+    }
+
+    int rightHeight = checkBalanced(node->rightChild);
+    if (rightHeight == -1) {
+      return -1; // right subtree is unbalanced 
+    }
+
+    if (abs(leftHeight - rightHeight) > 1) {
+      return -1; // current node is unbalanced
+    }
+    return max(leftHeight, rightHeight) + 1;
+  }
+
   void clear(Node* node) {
     if (node == nullptr) {
       return;
@@ -230,6 +251,7 @@ public:
   int getHeight() { return getHeight(root); }
   bool searchVal(int val) { return searchVal(root, val); }
   bool isIdentical(const BinarySearchTree& otherTree) { return isIdentical(this->root, otherTree.root); }
+  bool isBalanced() { return checkBalanced(root) != -1; }
   bool isEmpty() { return root == nullptr; }
 
   void printTree() {
