@@ -28,6 +28,7 @@ private:
     }
     return node;
   }
+  
   Node* deleteVal(Node* node, int val) {
     if (node == nullptr) {
       return node;
@@ -76,6 +77,7 @@ private:
     preorder(node->leftChild);
     preorder(node->rightChild);
   }
+  
   void inorder(Node* node) {
     // left -> root -> right
     // visits the nodes in ascending (sorted) order
@@ -86,6 +88,7 @@ private:
     cout << node->data << " ";
     inorder(node->rightChild);
   }
+  
   void postorder(Node* node) {
     // left -> right -> root
     // useful for deletion and memory cleanup
@@ -106,6 +109,7 @@ private:
     }
     return node;
   }
+  
   Node* findMax(Node* node) {
     if (node == nullptr) {
       return node;
@@ -128,6 +132,7 @@ private:
     // take the larger height and add 1 for the current level
     return max(leftHeight, rightHeight) + 1;
   }
+  
   bool searchVal(Node* node, int val) {
     if (node == nullptr) {
       return false;
@@ -144,18 +149,19 @@ private:
       return searchVal(node->rightChild, val);
     }
   }
+  
   bool isIdentical(Node* root1, Node* root2) {
-    // Base Case 1: Both nodes are empty (Identical)
+    // case 1: both nodes are empty
     if (root1 == nullptr && root2 == nullptr) {
       return true;
     }
 
-    // Base Case 2: One node is empty but the other isn't (Not Identical)
+    // case 2: one node is empty but the other isnt
     if (root1 == nullptr || root2 == nullptr) {
       return false;
     }
 
-    // case 3: Both nodes exist. Check current data and recursively check subtrees
+    // case 3: both nodes exist. check curr data and recursively check subtrees
     return (root1->data == root2->data) && isIdentical(root1->leftChild, root2->leftChild) && isIdentical(root1->rightChild, root2->rightChild);
   }
   void clear(Node* node) {
@@ -185,8 +191,7 @@ private:
         string newPadding = padding + (hasLeftSibling ? "|    " : "     ");
 
         // process right side first (prints higher up on the screen)
-        printTree(newPadding, "|----", node->rightChild,
-                  node->leftChild != nullptr);
+        printTree(newPadding, "|----", node->rightChild, node->leftChild != nullptr);
 
         // process left side second (prints lower down on the screen)
         printTree(newPadding, "|____", node->leftChild, false);
