@@ -183,16 +183,15 @@ class BinarySearchTree {
 		return max(leftHeight, rightHeight) + 1;
 	}
 
-	bool isBST(Node* root, int minValue, int maxValue) {
-		if (root == nullptr) {
+	bool isBST(Node* node, int minValue, int maxValue) {
+		if (node == nullptr) {
 			return true;
 		}
 
-		if (root->data <= minValue || root->data >= maxValue) {
+		if (node->data <= minValue || node->data >= maxValue) {
 			return false;
 		}
-
-		return isBST(root->leftChild, minValue, root->data) && isBST(root->rightChild, root->data, maxValue);
+		return isBST(node->leftChild, minValue, node->data) && isBST(node->rightChild, node->data, maxValue);
 	}
 
 	void clear(Node* node) {
