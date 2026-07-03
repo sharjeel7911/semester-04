@@ -16,10 +16,12 @@
 !**/*.gitignore
 !**/*.jpeg
 !**/*.png
+!**/*.PNG
 !**/*.sql
 !**/*.odt
 !**/*.aia
 !**/*.apk
+!**/*.csv
 
 # Ignore compiled binaries
 *.out
