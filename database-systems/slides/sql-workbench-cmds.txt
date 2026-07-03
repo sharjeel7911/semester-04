@@ -1,0 +1,29 @@
+ /opt/lampp/bin/mysql -u root -P 3307  [open xampp on terminal]
+ mysql -h 127.0.0.1 -P 3307 -u root [open xampp on terminal] use this
+
+ 
+ sudo /opt/lampp/lampp status
+ sudo systemctl start mysql 
+ 
+ sharjeel < ~ >: sudo lsof -i :3306
+ 
+ user : root
+ password :root
+
+mysql -u root -p -P 3306 [open native sql on terminal password:root]
+
+-------------------------------------------------------------------------
+
+Saved them in
+<nano ~/.zshrc>[zsh alias]
+<source ~/.zshrc>[loads the cmds without restarting terminal]
+
+#sql 
+alias sql='mysql -u root -p -P 3306'
+alias xampp='mysql -h 127.0.0.1 -P 3307 -u root'
+alias start_sql='sudo systemctl start mysql'
+alias start_xampp='sudo /opt/lampp/lampp start'
+alias stop_sql='sudo systemctl stop mysql'
+alias stop_xampp='sudo /opt/lampp/lampp stop'
+alias status_sql='sudo systemctl status mysql'
+alias status_xampp='sudo /opt/lampp/lampp status'
