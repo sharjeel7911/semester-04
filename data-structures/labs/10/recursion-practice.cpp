@@ -395,3 +395,235 @@ bool ratInMaze(int maze[MAZE_SIZE][MAZE_SIZE], int r, int c, int pathGrid[MAZE_S
     pathGrid[r][c] = 0; // backtrack protocol triggered: erase step configuration footprints
     return false;
 }
+
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------
+
+
+
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+void print_num_1_N(int num)
+{
+    if (num == 0)
+        return;
+    print_num_1_N(num - 1);
+    cout << num << " ";
+}
+void print_num_N_1(int num)
+{
+    if (num == 0)
+        return;
+    cout << num << " ";
+    print_num_N_1(num - 1);
+}
+int factorial(int num)
+{
+    if (num == 1 || num == 0)
+        return 1;
+    return num * factorial(num - 1);
+}
+int sum_upto_N(int num)
+{
+    if (num == 0)
+        return 0;
+    return num + sum_upto_N(num - 1);
+}
+int fibonacci(int num)
+{
+    if (num == 0 || num == 1)
+        return num;
+    return fibonacci(num - 1) + fibonacci(num - 2);
+}
+int fibonacci_sum(int a, int b, int num)
+{
+    if (num == 0)
+        return a;
+    int c = a + b;
+    return fibonacci_sum(b, c, num - 1);
+}
+void reverse_array(vector<int> &vec, int left, int right)
+{
+    if (left >= right)
+        return;
+    int temp = vec[left];
+    vec[left] = vec[right];
+    vec[right] = temp;
+    reverse_array(vec, left + 1, right - 1);
+}
+bool is_palindrome(string arr, int left, int right)
+{
+    if (left >= right)
+        return true;
+    if (arr[left] == arr[right])
+        return is_palindrome(arr, left + 1, right - 1);
+    else
+        return false;
+}
+int power(int a, int b, int result)
+{
+    if (b == 0)
+        return result;
+    result *= a;
+    return power(a, b - 1, result);
+}
+int occurance(int array[], int num, int count, int i, int size)
+{
+    if (i == size)
+        return count;
+    if (array[i] == num)
+        count++;
+    return occurance(array, num, count, i + 1, size);
+}
+int bin_search(int array[], int num, int left, int right)
+{
+    if (left > right)
+        return -1;
+    int mid = left + (right - left) / 2;
+    if (array[mid] == num)
+        return mid;
+    else if (array[mid] > num)
+        right = mid - 1;
+    else
+        left = mid + 1;
+    return bin_search(array, num, left, right);
+}
+
+// Print numbers from N to 1 and from 1 to N
+int main1()
+{
+    cout << "Enter N" << endl;
+    int n = 0;
+    cin >> n;
+    print_num_1_N(n);
+    cout << endl;
+    print_num_N_1(n);
+    return 0;
+}
+// Factorial of a number
+int main2()
+{
+    cout << "Enter Number" << endl;
+    int n = 0;
+    cin >> n;
+    int fac = 1;
+    cout << "Factorial: " << factorial(n);
+    return 0;
+}
+// Sum of first N natural numbers. Find 1 + 2 + � + N
+int main3()
+{
+    cout << "Enter N" << endl;
+    int n = 0;
+    cin >> n;
+    cout << "Sum: " << sum_upto_N(n);
+    return 0;
+}
+// Nth Fibonacci and print series and sum
+int main4()
+{
+    cout << "Enter N" << endl;
+    int n = 0;
+    cin >> n;
+    cout << "Nth Fibonacci: " << fibonacci(n) << endl;
+    cout << "Fibonacci Series: " << endl;
+    for (int i = 0; i < n; i++)
+    {
+        cout << fibonacci(i);
+        cout << " ";
+    }
+    cout << endl;
+    cout << "Fibonacci Sum: " << fibonacci_sum(0, 1, n + 1) - 1;
+    return 0;
+}
+// Given an array, reverse it using recursion.
+int main5()
+{
+    vector<int> vec = {1, 2, 3, 4, 5};
+    int left = 0, right = vec.size() - 1;
+    reverse_array(vec, left, right);
+    for (int i = 0; i < vec.size(); i++)
+        cout << vec[i] << " ";
+    return 0;
+}
+// Check if a string is a palindrome
+int main6()
+{
+    string arr = "123321";
+    int left = 0, right = arr.size() - 1;
+    if (is_palindrome(arr, left, right))
+        cout << "Yes" << endl;
+    else
+        cout << "No";
+    return 0;
+}
+// Find a^b using recursion
+int main7()
+{
+    cout << "Enter a and b" << endl;
+    int a = 0, b = 0, result = 1;
+    cin >> a >> b;
+    cout << power(a, b, result);
+    return 0;
+}
+// Count occurrences of an element in array
+int main8()
+{
+    int array[] = {1, 2, 3, 4, 5, 2, 5, 6, 7, 8, 9, 3, 5, 6, 1, 4, 6, 6};
+    int n = 0, count = 0, size = sizeof(array) / sizeof(array[0]);
+    cout << "Enter N" << endl;
+    cin >> n;
+    cout << occurance(array, n, count, 0, size);
+    return 0;
+}
+// Implement binary search recursively.
+int main()
+{
+    int array[] = {1, 2, 3, 4, 5, 7, 8, 9, 11, 24, 56, 78, 98, 99, 567, 4567};
+    int left = 0, right = sizeof(array) / sizeof(array[0]) - 1, n = 0;
+    cout << "Enter N" << endl;
+    cin >> n;
+    cout << bin_search(array, n, left, right);
+    return 0;
+}
+/*
+Implement the following recursive method. Do not use any local variables or loops.
+void pyramidPattern(int n, int x).
+The output consists of lines of integers. The first line is the number n. The following line is the number n n+1. The following line is the number n n+1 n+2, and so on, until you reach a line with n+x.This list of numbers is then repeated backward until you go back to n.
+Example output with n = 1, x = 4:
+1
+12
+123
+12
+1
+*/
+void pyramid_pattern(int n, int x)
+{
+    if (x == n)
+        return;
+    cout << n << endl;
+    return pyramid_pattern(n, x);
+    return pyramid_pattern(n + 1, x);
+}
+
+int main10()
+{
+    int n = 0, x = 0;
+    cout << "Enter N" << endl;
+    cin >> n;
+    cout << "Enter X" << endl;
+    cin >> x;
+    for (int i = 0; i < n + x; i++)
+    {
+        pyramid_pattern(n, x);
+    }
+    return 0;
+}
